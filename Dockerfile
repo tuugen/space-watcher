@@ -1,4 +1,5 @@
 FROM python:3.9-alpine
+# based on https://github.com/joyzoursky/docker-python-chromedriver
 
 # update apk repo
 RUN echo "http://dl-4.alpinelinux.org/alpine/v3.14/main" >> /etc/apk/repositories && \
