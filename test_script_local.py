@@ -7,6 +7,7 @@ from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 import os
 
+# python -m unittest test_script_local.TestTemplate.test_case_1
 class TestTemplate(unittest.TestCase):
     """Include test cases on a given url"""
 
@@ -31,8 +32,7 @@ class TestTemplate(unittest.TestCase):
 
     def test_case_0(self):
         print("testing 0")
-        import ipdb
-
+        # import ipdb
         # ipdb.sset_trace()
 
         for i in range(2):
@@ -98,23 +98,47 @@ class TestTemplate(unittest.TestCase):
 
         file.close()
 
-    # def test_case_1(self):
-    #     """Find and click top-left logo button"""
-    #     try:
-    #         self.driver.get('https://www.oursky.com/')
-    #         el = self.driver.find_element_by_class_name('header__logo')
-    #         el.click()
-    #     except NoSuchElementException as ex:
-    #         self.fail(ex.msg)
+    def test_case_1(self):
+        """Find and click top-left logo button"""
+        assert 1 == 1
+        import ipdb
+        # ipdb.sset_trace()
 
-    # def test_case_2(self):
-    #     """Find and click top-right Start your project button"""
-    #     try:
-    #         self.driver.get('https://www.oursky.com/')
-    #         el = self.driver.find_element_by_class_name("header__cta")
-    #         el.click()
-    #     except NoSuchElementException as ex:
-    #         self.fail(ex.msg)
+        SAVE_FILE = "fake_prev_close.txt"
+        ##make a fake svaed prev_close
+        file = open(SAVE_FILE,"w")
+        file.write("0.35")
+        file.close()
+
+        ## fetch prev_closed_data
+
+        OTC_QUOTES_URL = os.environ.get("OTC_QUOTES_URL")
+        self.driver.get(OTC_QUOTES_URL)
+
+        from selenium.webdriver.common.by import By
+        driver = self.driver
+
+        #sibling html element of label "prev close" has actual number
+        new_prev_close = driver.find_elements(By.XPATH,
+                  '//label[contains(text(),"Prev Close")]/../p')[0]
+        
+        new_prev_close = new_prev_close.text
+
+        ## get prev close
+        file = open(SAVE_FILE,"r")
+        old_prev_close = file.read()
+        file.close()
+
+        print("=== prev close from file: {}".format(old_prev_close))
+        print("=== new prev close: {}".format(new_prev_close))
+
+        
+        ipdb.sset_trace()
+
+        print('done')
+        
+       
+
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestTemplate)

@@ -1,5 +1,4 @@
 selenium
-requests
 
-discord
-python-dotenv
+##local
+ipdb

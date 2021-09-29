@@ -5,6 +5,11 @@ A simple selenium test example written by python
 import unittest
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
+from selenium.common.exceptions import TimeoutException
+import os
 
 class TestTemplate(unittest.TestCase):
     """Include test cases on a given url"""
@@ -90,23 +95,48 @@ class TestTemplate(unittest.TestCase):
         file.close()
 
 
-    # def test_case_1(self):
-    #     """Find and click top-left logo button"""
-    #     try:
-    #         self.driver.get('https://www.oursky.com/')
-    #         el = self.driver.find_element_by_class_name('header__logo')
-    #         el.click()
-    #     except NoSuchElementException as ex:
-    #         self.fail(ex.msg)
+    def test_case_1(self):
 
-    # def test_case_2(self):
-    #     """Find and click top-right Start your project button"""
-    #     try:
-    #         self.driver.get('https://www.oursky.com/')
-    #         el = self.driver.find_element_by_class_name("header__cta")
-    #         el.click()
-    #     except NoSuchElementException as ex:
-    #         self.fail(ex.msg)
+
+        OTC_QUOTES_URL = os.environ.get("OTC_QUOTES_URL")
+        print("scanning {}".format(OTC_QUOTES_URL))
+        self.driver.get(OTC_QUOTES_URL)
+
+        from selenium.webdriver.common.by import By
+        driver = self.driver
+
+        delay = 10 # seconds
+        try:
+
+            myElem = WebDriverWait(driver, delay).until(
+                EC.presence_of_element_located((By.XPATH, '//label[contains(text(),"Prev Close")]/../p')))
+                
+            print("Page is ready!")
+        except TimeoutException:
+            print ("Loading took too much time!")
+
+        #sibling html element of label "prev close" has actual number
+        new_prev_close = driver.find_elements(By.XPATH,
+                  '//label[contains(text(),"Prev Close")]/../p')[0]
+        
+        new_prev_close = new_prev_close.text
+
+        print("=== new prev close: {}".format(new_prev_close))
+
+        ## get prev close
+        # OUTPUT_FILE = os.environ.get("OUTPUT_FILE")
+        OUTPUT_FILE = "prev_close.txt"
+
+        file = open(OUTPUT_FILE,"w")
+        file.write(new_prev_close)
+        file.close()
+
+        
+        
+
+
+        print('done')
+
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestTemplate)
