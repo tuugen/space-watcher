@@ -14,6 +14,7 @@ jobs:
         id: date
         run: echo "::set-output name=date::$(date +'%Y-%m-%d-%s')"
 
+        #https://github.com/marketplace/actions/build-and-push-docker-images
       - name: Build image
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
@@ -23,14 +24,12 @@ jobs:
           tags: spacewatcher
           labels: ${{ steps.meta.outputs.labels }}
 
-      # - uses: docker/build-push-action@v2
-      #   with:
-      #     tags: test-image:latest
-      #     push: false
-
+    
+      #https://github.com/marketplace/actions/docker-run-action
       - uses: addnab/docker-run-action@v3
         with:
           image: spacewatcher
+          options: -w /usr/workspace -v ${{ github.workspace }}:/usr/workspace 
           run: python3 test_script.py
 
       - name: view output
@@ -46,5 +45,5 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            results-artifact.txt
+            result.txt
  
